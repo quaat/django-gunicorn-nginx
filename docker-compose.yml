@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8022:8000"
+    volumes:
+      - ./src:/src
+      - ./config/nginx:/etc/nginx/conf.d
+    depends_on:
+      - demo
+
+  demo:
+    build: .
+    command: bash -c "python3 manage.py makemigrations && python3 manage.py migrate && gunicorn demo.wsgi -b 0.0.0.0:8000"
+    volumes:
+      - ./demo:/demo
+    expose:
+      - "8000"
+    
+     
